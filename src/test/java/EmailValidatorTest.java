@@ -1,27 +1,31 @@
+import Logger.LoggerImpl;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class EmailValidatorTest {
 
+    private EmailValidator emailValidator;
+
+    @Before
+    public void setUp() throws Exception {
+        this.emailValidator = new EmailValidator();
+        this.emailValidator.setLogger(new LoggerImpl());
+    }
+
     @Test
     public void ItValidatesAStandardEmail() {
-        EmailValidator validator = new EmailValidator("VALID@EMAIL.COM");
-
-        assertTrue(validator.isValid());
+        assertTrue(this.emailValidator.isValid("VALID@EMAIL.COM"));
     }
 
     @Test
     public void ItValidatesALowerCaseEmail() {
-        EmailValidator validator = new EmailValidator("valid@email.com");
-
-        assertTrue(validator.isValid());
+        assertTrue(this.emailValidator.isValid("valid@email.com"));
     }
 
     @Test public void ItValidatesMuseum() {
-        EmailValidator validator = new EmailValidator("valid@email.museum");
-
-        assertTrue(validator.isValid());
+        assertTrue(this.emailValidator.isValid("valid@email.museum"));
     }
 
     @Test
@@ -36,16 +40,13 @@ public class EmailValidatorTest {
         };
 
         for(String badEmail : badEmails) {
-            EmailValidator validator = new EmailValidator(badEmail);
-            assertFalse(validator.isValid());
+            assertFalse(this.emailValidator.isValid(badEmail));
         }
     }
 
     @Test
     public void ItDoesntValidateEmailsInTheBlacklist() {
-        EmailValidator validator = new EmailValidator("please@gmail.com");
-        validator.setBlacklist(new String[] {"PLEASE@GMAIL.COM"});
-
-        assertFalse(validator.isValid());
+        this.emailValidator.setBlacklist(new String[] {"PLEASE@GMAIL.COM"});
+        assertFalse(this.emailValidator.isValid("please@gmail.com"));
     }
 }

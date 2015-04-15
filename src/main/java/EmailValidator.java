@@ -3,13 +3,11 @@ import java.util.HashMap;
 
 public class EmailValidator {
     public static final String ValidEmailRegularExpression = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.([A-Z]{2,4}|MUSEUM)$";
-    private String email;
     private HashMap<String, String> blacklist;
     private Logger logger;
 
-    public EmailValidator(String email) {
+    public EmailValidator() {
         this.blacklist = new HashMap<String, String>();
-        this.email = email;
         this.logger = new NullLogger();
     }
 
@@ -20,20 +18,20 @@ public class EmailValidator {
         }
     }
 
-    public boolean isValid() {
-        if (emailIsInBlacklist()) {
-            logger.LogEmail(email);
+    public boolean isValid(String email) {
+        if (emailIsInBlacklist(email)) {
+            logger.log(email, "*", "*");
             return false;
         }
 
-        return emailFormatIsValid();
+        return emailFormatIsValid(email);
     }
 
-    private boolean emailFormatIsValid() {
+    private boolean emailFormatIsValid(String email) {
         return email.toUpperCase().matches(ValidEmailRegularExpression);
     }
 
-    private boolean emailIsInBlacklist() {
+    private boolean emailIsInBlacklist(String email) {
         return blacklist.containsKey(email.toUpperCase());
     }
 
